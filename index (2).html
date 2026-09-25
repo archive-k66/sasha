@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для самой прекрасной Сашеньки ✨ | Подарок от Димы</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Montserrat:wght@300;400;500;600;700;800;900&family=Marck+Script&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-pink: #ff2a85;
+            --neon-purple: #b026ff;
+            --accent-glow: #00f0ff;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #07040d;
+            color: #ffffff;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-handwriting {
+            font-family: 'Marck Script', cursive;
+        }
+
+        .font-caveat {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090514;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff2a85, #b026ff);
+            border-radius: 4px;
+        }
+
+        /* Neon Glow Effects */
+        .neon-text-pink {
+            text-shadow: 0 0 10px rgba(255, 42, 133, 0.7), 0 0 25px rgba(255, 42, 133, 0.5), 0 0 45px rgba(255, 42, 133, 0.3);
+        }
+
+        .neon-text-purple {
+            text-shadow: 0 0 10px rgba(176, 38, 255, 0.7), 0 0 25px rgba(176, 38, 255, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 42, 133, 0.4);
+            box-shadow: 0 0 30px rgba(255, 42, 133, 0.25);
+        }
+
+        /* Shimmer Animation */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, #ff2a85, #ffffff, #00f0ff, #ff2a85);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+
+        /* Floating 3D Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .animate-float-slow {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        /* Pulse Heart Animation */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255,42,133,0.8)); }
+            50% { transform: scale(1.12); filter: drop-shadow(0 0 35px rgba(255,42,133,1)); }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        /* 3D Flip Card Logic */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Equalizer Bar Animation */
+        @keyframes eqBar {
+            0%, 100% { height: 6px; }
+            50% { height: 28px; }
+        }
+
+        .eq-bar {
+            animation: eqBar 1.2s ease-in-out infinite;
+        }
+
+        /* Gift Box 3D Pulse */
+        @keyframes giftBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        .gift-bounce {
+            animation: giftBounce 2.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-24 text-white flex flex-col items-center justify-start">
+
+    <!-- Interactive Particle Canvas Background -->
+    <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Top Glow Overlay -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-pink-600/20 via-purple-600/10 to-transparent blur-3xl pointer-events-none z-0"></div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="relative z-10 w-full max-w-4xl mx-auto px-4 pt-8 sm:pt-12 text-center">
+
+        <!-- HEADER BANNER -->
+        <header class="mb-12">
+            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-300 text-xs sm:text-sm font-semibold tracking-wider uppercase mb-6 backdrop-blur-md animate-pulse">
+                <span class="w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping"></span>
+                Единственной и неповторимой ✨
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight mb-4 leading-tight">
+                Для самой прекрасной <br class="hidden sm:inline" />
+                <span class="shimmer-text">Сашеньки</span> 💕
+            </h1>
+
+            <p class="text-base sm:text-xl text-purple-200/80 font-light max-w-2xl mx-auto leading-relaxed">
+                Специальный интерактивный подарок от <span class="font-bold text-pink-400">Димы (Кахи)</span>, созданный с заботой, любовью и хорошим настроением!
+            </p>
+        </header>
+
+        <!-- RETRO MUSIC / VIBE PLAYER SIMULATION -->
+        <section class="mb-14">
+            <div class="glass-card rounded-3xl p-6 max-w-md mx-auto border border-pink-500/20 relative overflow-hidden group">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl"></div>
+
+                <div class="flex items-center justify-between gap-4">
+                    <!-- Album Cover Mock -->
+                    <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-800 flex items-center justify-center text-3xl shadow-lg shadow-pink-500/30 flex-shrink-0 animate-float-slow">
+                        👑
+                    </div>
+
+                    <!-- Track Info -->
+                    <div class="flex-1 text-left overflow-hidden">
+                        <div class="text-xs uppercase tracking-widest text-pink-400 font-semibold mb-1">Эксклюзивный трек</div>
+                        <h4 class="font-bold text-white text-base sm:text-lg truncate">Vibe for Sashenka</h4>
+                        <p class="text-xs sm:text-sm text-gray-400 truncate">Relax & Smile • Kaha Edition</p>
+
+                        <!-- Visualizer Waves -->
+                        <div id="visualizer" class="flex items-end gap-1 mt-3 h-6">
+                            <div class="w-1 bg-pink-500 rounded-full eq-bar" style="animation-delay: 0.1s"></div>
+                            <div class="w-1 bg-purple-500 rounded-full eq-bar" style="animation-delay: 0.4s"></div>
+                            <div class="w-1 bg-pink-400 rounded-full eq-bar" style="animation-delay: 0.2s"></div>
+                            <div class="w-1 bg-cyan-400 rounded-full eq-bar" style="animation-delay: 0.6s"></div>
+                            <div class="w-1 bg-pink-600 rounded-full eq-bar" style="animation-delay: 0.3s"></div>
+                            <div class="w-1 bg-purple-400 rounded-full eq-bar" style="animation-delay: 0.5s"></div>
+                        </div>
+                    </div>
+
+                    <!-- Play / Pause Button -->
+                    <button id="music-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white text-xl shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex-shrink-0">
+                        <span id="music-icon">▶</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPLIMENT GENERATOR WHEEL / MAGIC BUTTON -->
+        <section class="mb-16">
+            <div class="glass-card rounded-3xl p-8 sm:p-10 relative overflow-hidden border border-purple-500/20">
+                <div class="absolute -left-10 -top-10 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl"></div>
+
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-pink-200 mb-3 flex items-center justify-center gap-2">
+                    <span>🎰</span> Генератор супер-комплиментов <span>✨</span>
+                </h2>
+                <p class="text-sm text-gray-300 max-w-lg mx-auto mb-8">
+                    Жми на кнопку, когда хочешь узнать, почему ты самая классная!
+                </p>
+
+                <!-- Display Box -->
+                <div id="compliment-box" class="min-h-[90px] sm:min-h-[100px] flex items-center justify-center bg-black/40 border border-pink-500/30 rounded-2xl p-6 mb-8 text-lg sm:text-2xl font-semibold text-pink-100 shadow-inner transition-all duration-300">
+                    Нажми на кнопку ниже 👇
+                </div>
+
+                <button onclick="generateCompliment()" class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-semibold text-white rounded-2xl group bg-gradient-to-br from-pink-500 via-purple-600 to-cyan-500 hover:text-white shadow-xl shadow-pink-500/25 transition-all duration-300 hover:scale-105 active:scale-95">
+                    <span class="relative px-8 py-4 transition-all ease-in duration-75 bg-gray-950/80 rounded-[14px] group-hover:bg-opacity-0 text-base sm:text-lg font-bold flex items-center gap-3">
+                        <span>Сгенерировать милоту</span>
+                        <span class="text-xl">🎲</span>
+                    </span>
+                </button>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE FLIP CARDS SECTION -->
+        <section class="mb-20">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">
+                    Карточки с секретами 💌
+                </h2>
+                <p class="text-sm text-pink-300/80">Нажми на любую карточку, чтобы перевернуть её!</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+
+                <!-- Card 1: Почему ты лучшая -->
+                <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner relative w-full h-full transform-style-3d rounded-3xl glass-card p-6 border border-white/10 hover:border-pink-500/40">
+                        <!-- Front -->
+                        <div class="absolute inset-0 backface-hidden flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-950/80 to-slate-900/90 rounded-3xl text-center">
+                            <span class="text-5xl mb-4 animate-bounce">👑</span>
+                            <h3 class="text-2xl font-bold text-pink-300 mb-2">Почему ты лучшая?</h3>
+                            <p class="text-xs text-gray-400">Нажми, чтобы перевернуть »</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-pink-950/90 to-purple-900/90 rounded-3xl text-center border border-pink-500/50">
+                            <span class="text-4xl mb-2">💖</span>
+                            <h4 class="font-bold text-pink-200 mb-2 text-lg">Особая атмосфера</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed font-caveat text-xl">
+                                Ты сочетаешь в себе нереальную милоту, юмор и сильный характер. Общаться с тобой — одно удовольствие!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Загадка про шуруповерт -->
+                <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner relative w-full h-full transform-style-3d rounded-3xl glass-card p-6 border border-white/10 hover:border-pink-500/40">
+                        <!-- Front -->
+                        <div class="absolute inset-0 backface-hidden flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-950/80 to-slate-900/90 rounded-3xl text-center">
+                            <span class="text-5xl mb-4 animate-pulse">🛠️</span>
+                            <h3 class="text-2xl font-bold text-pink-300 mb-2">Загадка про шуруповерт</h3>
+                            <p class="text-xs text-gray-400">Нажми, чтобы перевернуть »</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-950/90 to-pink-900/90 rounded-3xl text-center border border-purple-500/50">
+                            <span class="text-4xl mb-2">🔩</span>
+                            <h4 class="font-bold text-pink-200 mb-2 text-lg">Мастер романтики</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed font-caveat text-xl">
+                                Самый надежный инструмент для ремонта сердца — твой шуруповерт! Ты закручиваешь мне голову со скоростью 3000 оборотов в минуту 😉
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Супер-способность -->
+                <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner relative w-full h-full transform-style-3d rounded-3xl glass-card p-6 border border-white/10 hover:border-pink-500/40">
+                        <!-- Front -->
+                        <div class="absolute inset-0 backface-hidden flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-950/80 to-slate-900/90 rounded-3xl text-center">
+                            <span class="text-5xl mb-4">🛵</span>
+                            <h3 class="text-2xl font-bold text-pink-300 mb-2">Супер-способность</h3>
+                            <p class="text-xs text-gray-400">Нажми, чтобы перевернуть »</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-pink-950/90 to-rose-900/90 rounded-3xl text-center border border-pink-500/50">
+                            <span class="text-4xl mb-2">🏎️</span>
+                            <h4 class="font-bold text-pink-200 mb-2 text-lg">Королева скорости</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed font-caveat text-xl">
+                                Гонять на мопеде, квадроцикле, рулить «шахой» и при этом очаровывать одним лишь взглядом — на такое способна только ты!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Наш идеальный вечер -->
+                <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner relative w-full h-full transform-style-3d rounded-3xl glass-card p-6 border border-white/10 hover:border-pink-500/40">
+                        <!-- Front -->
+                        <div class="absolute inset-0 backface-hidden flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-950/80 to-slate-900/90 rounded-3xl text-center">
+                            <span class="text-5xl mb-4">☕</span>
+                            <h3 class="text-2xl font-bold text-pink-300 mb-2">Идеальный рецепт</h3>
+                            <p class="text-xs text-gray-400">Нажми, чтобы перевернуть »</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-950/90 to-purple-900/90 rounded-3xl text-center border border-indigo-500/50">
+                            <span class="text-4xl mb-2">🌙</span>
+                            <h4 class="font-bold text-pink-200 mb-2 text-lg">Режим релакса</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed font-caveat text-xl">
+                                Тёплый плед, чашка горячего чая, вкусняшки, ноль долгов по учёбе и полное спокойствие. Ты это заслужила!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- UNBOXING GIFT SURPRISE SECTION -->
+        <section class="mb-20">
+            <div class="glass-card rounded-3xl p-8 sm:p-12 border border-pink-500/30 relative overflow-hidden">
+                <div class="text-center">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-pink-200 mb-3">
+                        Твой главный сюрприз 🎁
+                    </h2>
+                    <p class="text-sm text-gray-300 mb-8">Нажми на подарок, чтобы открыть секретное послание!</p>
+
+                    <!-- Animated Gift Icon -->
+                    <div id="gift-box" onclick="openSurprise()" class="gift-bounce inline-block cursor-pointer transform transition-transform hover:scale-110 active:scale-95 my-4">
+                        <div class="w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-tr from-pink-600 via-purple-600 to-rose-500 rounded-3xl shadow-2xl shadow-pink-500/50 flex items-center justify-center text-6xl sm:text-7xl border-2 border-pink-300/40 relative">
+                            <span class="absolute -top-4 text-4xl">🎀</span>
+                            🎁
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unboxed Secret Letter -->
+                <div id="surprise-content" class="hidden opacity-0 transform translate-y-10 transition-all duration-1000 mt-8 text-left bg-gradient-to-b from-pink-950/60 to-purple-950/60 p-6 sm:p-10 rounded-3xl border border-pink-500/50 shadow-2xl">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-4xl">💌</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-pink-200">Письмо для Сашеньки</h3>
+                            <p class="text-xs text-pink-400">От Димы (Кахи)</p>
+                        </div>
+                    </div>
+
+                    <p class="text-gray-100 font-caveat text-2xl sm:text-3xl leading-relaxed mb-6">
+                        Саш, ты реально самая прекрасная, милая и особенная! Спасибо за твоё хорошее настроение, за твои улыбки и за то, что ты есть.
+                    </p>
+
+                    <p class="text-gray-100 font-caveat text-2xl sm:text-3xl leading-relaxed mb-6">
+                        Никогда не переутомляйся из-за пар и колледжа, отдыхай сладко и помни: я всегда на связи и всегда готов поднять тебе настроение! ✨❤️
+                    </p>
+
+                    <div class="text-right pt-4 border-t border-pink-500/30">
+                        <span class="text-pink-300 font-bold text-lg">Обожаю тебя! 🥰</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER SIGNATURE -->
+        <footer class="pt-8 border-t border-white/10 text-center text-gray-400 text-sm">
+            <p class="mb-2">Сработано с любовью и вниманием 💖</p>
+            <p class="text-lg font-bold text-pink-400 font-handwriting">
+                Для самой прекрасной Сашеньки от Димы ✨
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        /* 1. CANVAS PARTICLE BACKGROUND ENGINE */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        const particleCount = 45;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height + height;
+                this.size = Math.random() * 14 + 8;
+                this.speedY = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.type = Math.random() > 0.4 ? 'heart' : 'star';
+                this.color = ['#ff2a85', '#b026ff', '#00f0ff', '#ff80bf'][Math.floor(Math.random() * 4)];
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+
+                if (this.y < -20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.font = `${this.size}px sans-serif`;
+                ctx.fillText(this.type === 'heart' ? '💖' : '✨', this.x, this.y);
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+
+        /* 2. CLICK HEART EXPLOSION ENGINE */
+        window.addEventListener('click', (e) => {
+            // Do not trigger if button clicked to avoid noise
+            createHeartBurst(e.clientX, e.clientY);
+        });
+
+        function createHeartBurst(x, y) {
+            const burstCount = 8;
+            for (let i = 0; i < burstCount; i++) {
+                const heart = document.createElement('div');
+                heart.innerText = ['💖', '✨', '🌸', '💫'][Math.floor(Math.random() * 4)];
+                heart.style.position = 'fixed';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                heart.style.fontSize = `${Math.random() * 16 + 16}px`;
+                heart.style.pointerEvents = 'none';
+                heart.style.zIndex = '9999';
+                heart.style.transition = 'all 1s cubic-bezier(0.1, 1, 0.1, 1)';
+                
+                document.body.appendChild(heart);
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 80 + 30;
+                const destX = x + Math.cos(angle) * distance;
+                const destY = y + Math.sin(angle) * distance;
+
+                setTimeout(() => {
+                    heart.style.left = `${destX}px`;
+                    heart.style.top = `${destY}px`;
+                    heart.style.opacity = '0';
+                    heart.style.transform = 'scale(1.5) rotate(' + (Math.random() * 360) + 'deg)';
+                }, 10);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 1000);
+            }
+        }
+
+        /* 3. AUDIO PLAYER SIMULATION LOGIC */
+        let isPlaying = false;
+        function toggleAudio() {
+            const btnIcon = document.getElementById('music-icon');
+            const visualizer = document.getElementById('visualizer');
+
+            isPlaying = !isPlaying;
+
+            if (isPlaying) {
+                btnIcon.innerText = '⏸';
+                visualizer.style.opacity = '1';
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 25, spread: 50, origin: { y: 0.3 } });
+                }
+            } else {
+                btnIcon.innerText = '▶';
+                visualizer.style.opacity = '0.3';
+            }
+        }
+
+        /* 4. COMPLIMENT GENERATOR WHEEL */
+        const compliments = [
+            "Самая милая девушка на мопеде и квадроцикле 🛵✨",
+            "Королева, перед которой даже преподы в колледже бессильны 👑",
+            "Лучшая улыбка на всём районе 😊💖",
+            "Единственная, кому я с радостью доверил бы руль 🏎️💨",
+            "Девушка с идеальным чувством юмора и прекрасным характером ✨",
+            "Мастер закручивать мне голову сильнее шуруповерта 🛠️🔥",
+            "Сашенька-Милашка — 100% совпадение с этим именем! 🥰"
+        ];
+
+        let lastComplimentIndex = -1;
+
+        function generateCompliment() {
+            const box = document.getElementById('compliment-box');
+            let index;
+
+            do {
+                index = Math.floor(Math.random() * compliments.length);
+            } while (index === lastComplimentIndex && compliments.length > 1);
+
+            lastComplimentIndex = index;
+
+            box.style.opacity = '0';
+            box.style.transform = 'scale(0.95)';
+
+            setTimeout(() => {
+                box.innerText = compliments[index];
+                box.style.opacity = '1';
+                box.style.transform = 'scale(1)';
+            }, 200);
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 35,
+                    spread: 60,
+                    origin: { y: 0.5 }
+                });
+            }
+        }
+
+        /* 5. 3D FLIP CARD TOGGLE */
+        function flipCard(cardWrapper) {
+            const inner = cardWrapper.querySelector('.card-inner');
+            inner.classList.toggle('rotate-y-180');
+        }
+
+        /* 6. GIFT SURPRISE UNBOXING */
+        let isUnboxed = false;
+        function openSurprise() {
+            if (isUnboxed) return;
+            isUnboxed = true;
+
+            const giftBox = document.getElementById('gift-box');
+            const content = document.getElementById('surprise-content');
+
+            giftBox.style.transform = 'scale(1.3) rotate(15deg)';
+            
+            setTimeout(() => {
+                giftBox.style.transform = 'scale(0)';
+                giftBox.style.display = 'none';
+
+                content.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('opacity-0', 'translate-y-10');
+                    content.classList.add('opacity-100', 'translate-y-0');
+                }, 50);
+
+                // Big Confetti Cannon
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { y: 0.6 },
+                        colors: ['#ff2a85', '#b026ff', '#00f0ff', '#ffffff']
+                    });
+                }
+            }, 400);
+        }
+    </script>
+</body>
+</html>
